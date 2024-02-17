@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf">
     <q-header elevated>
-      <q-toolbar>
+      <q-toolbar class="q-px-lg">
         <q-toolbar-title>
           <q-img src="/logo.svg" height="30px" width="140px" />
         </q-toolbar-title>
@@ -22,31 +22,19 @@
               <img src="https://s3-alpha-sig.figma.com/img/d48e/0f1f/6380fec1035b1a2c33f92502f87eda80?Expires=1708905600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=nWBiX02z84dLtDSFrV8ujxYiPYxMybCbd~oynpnBzSTUd-lXjIwgHFJCiXuEDRJMHkE8lW302-gM12m5Yq4uRBK1O5SCxxC2x-A5LfhrpV8hx~RDbMQK89Z7G~jM9nxZ6nfjIWdNe5HdEIRX9Ht-XUM4oV42pNgBSMwHdox69J2vtbZC4CxB6N-VaKtcxLYg~fi1Z7Kxl2TGGaJRhfztxs~n1azqKHZR03UMcCvAu3AmfqD9TYsL8KxN9w7UE8tKZgAST4sp~yjbixU7rxeY8FcwOxy70P6CusWqwX4LE~MkCn7enjEXU32Ba-M7ybwOBLMqWydN1Xgb6pSTkbH3Bw__">
             </q-avatar>
             <q-tooltip>Account</q-tooltip>
-            <q-menu>
-              <q-list style="min-width: 100px">
+            <q-menu fit :offset="[10, 5]" square>
+              <q-list style="min-width: 150px">
                 <q-item clickable v-close-popup>
-                  <q-item-section>New tab</q-item-section>
+                  <q-item-section>Hello User</q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup>
-                  <q-item-section>New incognito tab</q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item clickable v-close-popup>
-                  <q-item-section>Recent tabs</q-item-section>
-                </q-item>
-                <q-item clickable v-close-popup>
-                  <q-item-section>History</q-item-section>
-                </q-item>
-                <q-item clickable v-close-popup>
-                  <q-item-section>Downloads</q-item-section>
-                </q-item>
-                <q-separator />
                 <q-item clickable v-close-popup>
                   <q-item-section>Settings</q-item-section>
                 </q-item>
-                <q-separator />
                 <q-item clickable v-close-popup>
-                  <q-item-section>Help &amp; Feedback</q-item-section>
+                  <q-item-section>Help</q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup>
+                  <q-item-section>Logout</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -58,19 +46,53 @@
     <q-drawer
       show-if-above
       bordered
+      class="flex column justify-between"
     >
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
-
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
         />
+      </q-list>
+
+      <q-list class="drawer-bottom-links">
+        <div class="inset-border"></div>
+        <q-item
+          clickable
+          tag="a"
+          class="q-pa-md q-mt-md"
+          :href="'https://www.slack.com'" target="_blank"
+        >
+          <q-item-section
+            avatar
+            class="q-ml-sm"
+          >
+            <q-img src="/slack.svg" height="24px" width="24px" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Join Slack Community</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item
+          clickable
+          tag="a"
+          class="q-pa-md"
+          :href="'https://www.smartlead.ai/'" target="_blank"
+        >
+          <q-item-section
+            avatar
+            class="q-ml-sm"
+          >
+            <q-img src="/video.svg" height="24px" width="24px" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Smartlead Tutorials</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -86,46 +108,22 @@ import EssentialLink from 'components/EssentialLink.vue';
 
 const linksList = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
+    title: 'All Leads',
+    icon: '/all-leads.svg',
+    activeIcon: '/all-leads-active.svg',
+    link: '/all-leads',
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
+    title: 'Master Inbox',
+    icon: '/master-inbox.svg',
+    activeIcon: '/master-inbox-active.svg',
+    link: '/master-inbox',
   },
   {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
+    title: 'Email Campaigns',
+    icon: '/email-campaigns.svg',
+    activeIcon: '/email-campaigns-active.svg',
+    link: '/email-campaigns',
   },
 ];
 
@@ -143,3 +141,19 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+  .drawer-bottom-links{
+    position: relative;
+  }
+  .inset-border::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px; /* Width of the top border */
+    height: 2px; /* Height of the top border */
+    background-color: #E1E3EF; /* Border color */
+  }
+</style>

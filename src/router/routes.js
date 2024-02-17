@@ -3,7 +3,10 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/IndexPage.vue') },
+      { path: '', redirect: 'email-campaigns' },
+      { path: 'email-campaigns', component: () => import('pages/EmailCampaigns.vue') },
+      { path: 'all-leads', component: () => import('pages/AllLeads.vue') },
+      { path: 'master-inbox', component: () => import('pages/MasterInbox.vue') },
     ],
   },
 
