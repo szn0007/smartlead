@@ -28,7 +28,7 @@
           <template v-slot:header="props">
             <q-tr :props="props">
               <q-th auto-width>
-                <q-checkbox v-model="props.selected" />
+                <q-checkbox v-model="props.selected" color="accent" />
               </q-th>
               <q-th
                 v-for="col in props.cols"
@@ -43,7 +43,7 @@
           <template v-slot:body="props">
             <q-tr :props="props">
               <q-td auto-width>
-                <q-checkbox v-model="props.selected" />
+                <q-checkbox v-model="props.selected" color="accent" />
               </q-td>
               <q-td
                 key="campaign_details"
@@ -53,7 +53,7 @@
                   <q-item-section avatar>
                     <q-knob
                       disable
-                      :value="props.row.progress"
+                      v-model="props.row.progress"
                       show-value
                       size="50px"
                       :thickness="0.22"
@@ -105,7 +105,10 @@
                     'text-positive' : 'text-grey' ]">
                       {{ props.row.clicked }}<sub>{{ props.row.clickedPercent }}</sub>
                     </q-item-label>
-                    <q-item-label caption>Clicked</q-item-label>
+                    <q-item-label caption>
+                      Clicked<q-icon class="q-ml-xs" name="warning"
+                      color="warning" v-if="props.row.sent === 0"/>
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-item>
@@ -114,7 +117,10 @@
                     :class="['stats-title', props.row.opened > 0 ? 'text-negative' : 'text-grey' ]">
                       {{ props.row.opened }}<sub>{{ props.row.openedPercent }}</sub>
                     </q-item-label>
-                    <q-item-label caption>Opened</q-item-label>
+                    <q-item-label caption>
+                      Opened<q-icon class="q-ml-xs" name="warning"
+                      color="warning" v-if="props.row.sent === 0"/>
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-item>
@@ -123,7 +129,10 @@
                     :class="['stats-title', props.row.replied > 0 ? 'text-info' : 'text-grey' ]">
                       {{ props.row.replied }}<sub>{{ props.row.repliedPercent }}</sub>
                     </q-item-label>
-                    <q-item-label caption>Replied</q-item-label>
+                    <q-item-label caption>
+                      Replied<q-icon class="q-ml-xs" name="warning"
+                      color="warning" v-if="props.row.sent === 0"/>
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-item>
@@ -133,7 +142,11 @@
                     'text-warning' : 'text-grey' ]">
                       {{ props.row.positiveReply }}<sub>{{ props.row.positiveReplyPercent }}</sub>
                     </q-item-label>
-                    <q-item-label caption>Positive Reply</q-item-label>
+                    <q-item-label caption>
+                      Positive Reply
+                      <q-icon name="info" v-if="props.row.sent === 0"/>
+                      <q-icon name="fas fa-info" class="outlined-info" v-else />
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
 
@@ -178,7 +191,7 @@ const columns = [
 const rows = [
   {
     name: 'SW Zero Personalisation 1',
-    progress: '30',
+    progress: 30,
     date: '15 April 2023',
     sequence: 3,
     sent: 520,
@@ -208,7 +221,7 @@ const rows = [
   },
   {
     name: 'Campaign 3',
-    progress: '75',
+    progress: 75,
     date: '20 April 2023',
     sequence: 5,
     sent: 800,
@@ -223,7 +236,7 @@ const rows = [
   },
   {
     name: 'Promo Email 1',
-    progress: '20',
+    progress: 20,
     date: '10 April 2023',
     sequence: 2,
     sent: 300,
@@ -238,7 +251,7 @@ const rows = [
   },
   {
     name: 'Newsletter 1',
-    progress: '90',
+    progress: 90,
     date: '25 April 2023',
     sequence: 7,
     sent: 1000,
@@ -253,7 +266,7 @@ const rows = [
   },
   {
     name: 'Product Launch Email',
-    progress: '60',
+    progress: 60,
     date: '18 April 2023',
     sequence: 4,
     sent: 600,
@@ -268,7 +281,7 @@ const rows = [
   },
   {
     name: 'Survey Reminder',
-    progress: '80',
+    progress: 80,
     date: '22 April 2023',
     sequence: 6,
     sent: 700,
@@ -283,7 +296,7 @@ const rows = [
   },
   {
     name: 'Flash Sale Alert',
-    progress: '10',
+    progress: 10,
     date: '5 April 2023',
     sequence: 1,
     sent: 200,
@@ -298,7 +311,7 @@ const rows = [
   },
   {
     name: 'Holiday Greetings',
-    progress: '95',
+    progress: 95,
     date: '30 April 2023',
     sequence: 8,
     sent: 1200,
@@ -313,7 +326,7 @@ const rows = [
   },
   {
     name: 'New Feature Announcement',
-    progress: '45',
+    progress: 45,
     date: '12 April 2023',
     sequence: 3,
     sent: 450,
@@ -335,28 +348,18 @@ export default defineComponent(
       const selected = ref([]);
       const filter = ref('');
 
-      const onCheckboxChange = (row) => {
-        // Handle checkbox change and update selected rows
-        console.log(row);
-      };
-
       return {
         selected,
         filter,
         columns,
         rows,
-        onCheckboxChange,
-
-        getSelectedString() {
-          return selected.value.length === 0 ? '' : `${selected.value.length} record${selected.value.length > 1 ? 's' : ''} selected of ${rows.length}`;
-        },
       };
     },
   },
 );
 </script>
 
-<style>
+<style scoped>
   .email-campaigns-page{
     background-color: #F7F8FE;
   }
@@ -422,5 +425,11 @@ export default defineComponent(
   sub{
     color: #999BA8;
     font-size: 12px;
+  }
+  .outlined-info{
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    padding: 2px;
+    font-size: 6px;
   }
 </style>
