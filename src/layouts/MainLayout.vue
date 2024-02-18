@@ -27,12 +27,6 @@
                 <q-item clickable v-close-popup>
                   <q-item-section>Hello {{ userEmail }}</q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup>
-                  <q-item-section>Settings</q-item-section>
-                </q-item>
-                <q-item clickable v-close-popup>
-                  <q-item-section>Help</q-item-section>
-                </q-item>
                 <q-item clickable @click="confirmLogout = true">
                   <q-item-section>Logout</q-item-section>
                 </q-item>
@@ -152,19 +146,26 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const userEmail = computed(() => store.state.auth.email);
-    const $store = useStore();
     const $router = useRouter();
     const $q = useQuasar();
     const confirmLogout = ref(false);
 
-    const logout = () => {
-      $store.dispatch('auth/logoutUser');
-      $q.notify({
-        message: 'Logout Successful',
-        color: 'primary',
-        position: 'center',
-      });
-      $router.push('/login');
+    const logout = async () => {
+      try {
+        await store.dispatch('auth/logoutUser');
+        $q.notify({
+          message: 'Logout Successful',
+          color: 'primary',
+          position: 'center',
+        });
+        $router.push('/login');
+      } catch (error) {
+        $q.notify({
+          message: 'Logout Failed. Please try again.',
+          color: 'negative',
+          position: 'center',
+        });
+      }
     };
     return {
       essentialLinks: linksList,
