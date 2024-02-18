@@ -33,7 +33,7 @@
                 <q-item clickable v-close-popup>
                   <q-item-section>Help</q-item-section>
                 </q-item>
-                <q-item clickable @click="logout">
+                <q-item clickable @click="confirmLogout = true">
                   <q-item-section>Logout</q-item-section>
                 </q-item>
               </q-list>
@@ -41,6 +41,18 @@
           </q-btn>
         </div>
       </q-toolbar>
+      <q-dialog v-model="confirmLogout" persistent>
+        <q-card>
+          <q-card-section class="row items-center">
+            <div class="text-h6 q-ma-none">Are you sure you want to logout?</div>
+          </q-card-section>
+          <hr/>
+          <q-card-actions align="right">
+            <q-btn label="Cancel" color="negative" v-close-popup />
+            <q-btn label="Logout" color="primary" @click="logout" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </q-header>
 
     <q-drawer
@@ -103,7 +115,7 @@
 </template>
 
 <script>
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
@@ -143,6 +155,7 @@ export default defineComponent({
     const $store = useStore();
     const $router = useRouter();
     const $q = useQuasar();
+    const confirmLogout = ref(false);
 
     const logout = () => {
       $store.dispatch('auth/logoutUser');
@@ -157,6 +170,7 @@ export default defineComponent({
       essentialLinks: linksList,
       userEmail,
       logout,
+      confirmLogout,
     };
   },
 });
