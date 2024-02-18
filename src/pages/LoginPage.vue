@@ -15,8 +15,7 @@
             <div class="text-center">Log in to your account </div>
 
             <q-form
-              @submit="onSubmit"
-              @reset="onReset"
+              @submit.prevent="login"
               class="q-gutter-md q-mt-lg"
             >
               <label>Email</label>
@@ -42,7 +41,7 @@
                 lazy-rules
               >
                 <template v-slot:append>
-                  <span class="show-password" @click="isPwd = !isPwd">
+                  <span class="show-password cursor-pointer" @click="isPwd = !isPwd">
                     {{ isPwd ? 'Show' : 'Hide'}}
                   </span>
                 </template>
@@ -62,14 +61,54 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
+import { useQuasar } from 'quasar';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'IndexPage',
   setup() {
+    const email = ref('');
+    const password = ref('');
+    const isPwd = ref(true);
+    const $q = useQuasar();
+    const $store = useStore();
+    const $router = useRouter();
+
+    const login = () => {
+      // Mock user data
+      const users = [
+        { email: 'user1@smartlead.ai', password: 'password' },
+        { email: 'user2@smartlead.ai', password: 'password' },
+      ];
+
+      // Find user with matching email and password
+      const user = users.find(
+        (u) => u.email === email.value && u.password === password.value,
+      );
+
+      if (user) {
+        $q.notify({
+          message: 'Login Successful',
+          color: 'primary',
+          position: 'center',
+        });
+        $store.dispatch('auth/loginUser', email.value);
+        $router.push('/');
+      } else {
+        $q.notify({
+          message: 'Invalid email or password',
+          color: 'negative',
+          position: 'center',
+        });
+      }
+    };
+
     return {
-      password: ref(''),
-      isPwd: ref(true),
-      email: ref(''),
+      password,
+      isPwd,
+      email,
+      login,
     };
   },
 });

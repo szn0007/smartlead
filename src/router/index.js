@@ -2,6 +2,7 @@ import { route } from 'quasar/wrappers';
 import {
   createRouter, createMemoryHistory, createWebHistory, createWebHashHistory,
 } from 'vue-router';
+import { useStore } from 'vuex';
 import routes from './routes';
 
 /*
@@ -26,6 +27,21 @@ export default route((/* { store, ssrContext } */) => {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE),
+  });
+
+  Router.beforeEach((to, from, next) => {
+    const store = useStore();
+    const userEmail = store.state.auth.email;
+    if (!userEmail && to.path !== '/login') {
+      // User is not logged in and trying to access a protected route
+      next('/login');
+    } else if (userEmail && to.path === '/login') {
+      // User is already logged in, prevent accessing the login page again
+      next('/');
+    } else {
+      // Allow navigation
+      next();
+    }
   });
 
   return Router;

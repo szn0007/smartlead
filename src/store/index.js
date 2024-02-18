@@ -1,7 +1,7 @@
 import { store } from 'quasar/wrappers';
 import { createStore } from 'vuex';
-
-// import example from './module-example'
+import VuexPersistence from 'vuex-persist';
+import auth from './module-auth';
 
 /*
  * If not building with SSR mode, you can
@@ -12,12 +12,18 @@ import { createStore } from 'vuex';
  * with the Store instance.
  */
 
+const vuexLocal = new VuexPersistence({
+  storage: window.localStorage,
+  modules: ['auth'],
+  reducer: (state) => ({ auth: { email: state.auth.email } }),
+});
+
 export default store((/* { ssrContext } */) => {
   const Store = createStore({
     modules: {
-      // example
+      auth,
     },
-
+    plugins: [vuexLocal.plugin],
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only
     strict: process.env.DEBUGGING,

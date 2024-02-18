@@ -25,7 +25,7 @@
             <q-menu fit :offset="[10, 5]" square>
               <q-list style="min-width: 150px">
                 <q-item clickable v-close-popup>
-                  <q-item-section>Hello User</q-item-section>
+                  <q-item-section>Hello {{ userEmail }}</q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup>
                   <q-item-section>Settings</q-item-section>
@@ -33,7 +33,7 @@
                 <q-item clickable v-close-popup>
                   <q-item-section>Help</q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup>
+                <q-item clickable @click="logout">
                   <q-item-section>Logout</q-item-section>
                 </q-item>
               </q-list>
@@ -103,8 +103,11 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
 
 const linksList = [
   {
@@ -135,8 +138,25 @@ export default defineComponent({
   },
 
   setup() {
+    const store = useStore();
+    const userEmail = computed(() => store.state.auth.email);
+    const $store = useStore();
+    const $router = useRouter();
+    const $q = useQuasar();
+
+    const logout = () => {
+      $store.dispatch('auth/logoutUser');
+      $q.notify({
+        message: 'Logout Successful',
+        color: 'primary',
+        position: 'center',
+      });
+      $router.push('/login');
+    };
     return {
       essentialLinks: linksList,
+      userEmail,
+      logout,
     };
   },
 });
